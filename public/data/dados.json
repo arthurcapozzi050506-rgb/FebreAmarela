@@ -1,0 +1,71 @@
+{
+  "casos_por_ano": {
+    "serie": [
+      {"ano": 2000, "casos": 18, "obitos": 5},
+      {"ano": 2001, "casos": 22, "obitos": 7},
+      {"ano": 2002, "casos": 16, "obitos": 4},
+      {"ano": 2003, "casos": 12, "obitos": 3},
+      {"ano": 2004, "casos": 20, "obitos": 6},
+      {"ano": 2005, "casos": 25, "obitos": 8},
+      {"ano": 2006, "casos": 14, "obitos": 4},
+      {"ano": 2007, "casos": 42, "obitos": 14},
+      {"ano": 2008, "casos": 48, "obitos": 15},
+      {"ano": 2009, "casos": 36, "obitos": 12},
+      {"ano": 2010, "casos": 16, "obitos": 5},
+      {"ano": 2011, "casos": 12, "obitos": 3},
+      {"ano": 2012, "casos": 28, "obitos": 9},
+      {"ano": 2013, "casos": 15, "obitos": 5},
+      {"ano": 2014, "casos": 18, "obitos": 6},
+      {"ano": 2015, "casos": 22, "obitos": 7},
+      {"ano": 2016, "casos": 54, "obitos": 18},
+      {"ano": 2017, "casos": 778, "obitos": 262},
+      {"ano": 2018, "casos": 1376, "obitos": 453},
+      {"ano": 2019, "casos": 164, "obitos": 54},
+      {"ano": 2020, "casos": 24, "obitos": 8},
+      {"ano": 2021, "casos": 6, "obitos": 2},
+      {"ano": 2022, "casos": 2, "obitos": 1},
+      {"ano": 2023, "casos": 58, "obitos": 30},
+      {"ano": 2024, "casos": 102, "obitos": 41}
+    ],
+    "fonte": "BRASIL. Ministério da Saúde. Boletins Epidemiológicos de Febre Amarela. Brasília, DF: Ministério da Saúde, 2000–2024. Disponível em: https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/f/febre-amarela",
+    "fonte_url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/f/febre-amarela",
+    "data_consulta": "2025-09-15",
+    "notas": "Dados consolidados dos boletins epidemiológicos do Ministério da Saúde e da OPAS. Os picos de 2017–2018 correspondem ao maior surto registrado no país. Dados de 2024 parciais (até dezembro). Fonte complementar: OPAS/OMS, Atualização Epidemiológica Febre Amarela, abril de 2025."
+  },
+  "cobertura_vacinal": {
+    "serie": [
+      {"ano": 2010, "cobertura": 78.2},
+      {"ano": 2011, "cobertura": 76.5},
+      {"ano": 2012, "cobertura": 74.8},
+      {"ano": 2013, "cobertura": 73.1},
+      {"ano": 2014, "cobertura": 71.4},
+      {"ano": 2015, "cobertura": 68.9},
+      {"ano": 2016, "cobertura": 63.2},
+      {"ano": 2017, "cobertura": 55.7},
+      {"ano": 2018, "cobertura": 67.4},
+      {"ano": 2019, "cobertura": 72.1},
+      {"ano": 2020, "cobertura": 70.3},
+      {"ano": 2021, "cobertura": 68.5},
+      {"ano": 2022, "cobertura": 71.8},
+      {"ano": 2023, "cobertura": 75.2},
+      {"ano": 2024, "cobertura": 74.0}
+    ],
+    "meta": 95,
+    "fonte": "BRASIL. Ministério da Saúde. Cobertura Vacinal — Febre Amarela. Brasília, DF: Ministério da Saúde, 2024. Disponível em: https://infoms.saude.gov.br/extensions/SEIDIGI_DEMAS_VACINACAO_FEBRE_AMARELA/index.html",
+    "fonte_url": "https://infoms.saude.gov.br/extensions/SEIDIGI_DEMAS_VACINACAO_FEBRE_AMARELA/index.html",
+    "data_consulta": "2025-09-15",
+    "notas": "Cobertura vacinal nacional para febre amarela. Meta recomendada pela OPAS/OMS: 95%. Dados do SI-PNI (Sistema de Informação do Programa Nacional de Imunizações). A queda em 2017 coincide com o maior surto da doença."
+  },
+  "kpis": {
+    "casos_surto_2017_2019": 2318,
+    "letalidade_media": 33.0,
+    "cobertura_vacinal_recente": 74.0,
+    "casos_urbanos_desde_1942": 0,
+    "fontes": {
+      "casos_surto": "BRASIL. Ministério da Saúde. Boletins Epidemiológicos de Febre Amarela, 2017–2019.",
+      "letalidade": "OPAS/OMS. Atualização Epidemiológica Febre Amarela na Região das Américas, 24 abr. 2025.",
+      "cobertura": "BRASIL. Ministério da Saúde. Cobertura Vacinal — Febre Amarela, 2024.",
+      "urbanos": "BRASIL. Ministério da Saúde. Febre amarela, [s.d.]."
+    }
+  }
+}

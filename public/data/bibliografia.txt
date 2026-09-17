@@ -1,0 +1,39 @@
+REFERÊNCIAS BIBLIOGRÁFICAS — FEBRE AMARELA: INFORMAÇÃO QUE PROTEGE
+Projeto acadêmico independente, sem vínculo institucional com o Ministério da Saúde.
+Consulta das fontes em 15 de setembro de 2026.
+
+[1] VASCONCELOS, Pedro Fernando da Costa. Febre amarela. Revista da Sociedade Brasileira de Medicina Tropical, v. 36, n. 2, p. 275–293, 2003. DOI: 10.1590/S0037-86822003000200012.
+Uso: Revisão narrativa. Base para os conceitos da doença e dos ciclos de transmissão.
+
+[2] LOPES, Vanessa da Silva; SOUZA, Pablo Cristiano de; GARCIA, Érica Marvila; LIMA, Jaqueline Costa. Hesitação da vacina da febre amarela e sua relação com influências contextuais, individuais ou de grupo e questões específicas da vacina: uma revisão de escopo. Ciência & Saúde Coletiva, v. 28, n. 6, p. 1717–1727, 2023. DOI: 10.1590/1413-81232023286.13522022.
+Uso: Revisão de escopo com 11 estudos. Fundamenta a importância de esclarecer dúvidas e combater a desinformação.
+
+[3] NEDERLOF, Remco A. et al. Yellow Fever in Non-Human Primates: A Veterinary Guide from a One Health Perspective. Veterinary Sciences, v. 12, n. 4, art. 339, 2025. DOI: 10.3390/vetsci12040339.
+Uso: Revisão sobre primatas não humanos. Fundamenta o papel das epizootias como alerta.
+
+[4] BRASIL. Ministério da Saúde. Febre amarela. Brasília, DF: Ministério da Saúde, [s.d.]. Disponível em: https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/f/febre-amarela.
+Uso: Informações sobre sintomas, transmissão e procura por atendimento.
+
+[5] BRASIL. Ministério da Saúde. Calendário de Vacinação. Brasília, DF: Ministério da Saúde, [s.d.]. Disponível em: https://www.gov.br/saude/pt-br/vacinacao/calendario.
+Uso: Orientações atuais por idade e histórico vacinal.
+
+[6] BRASIL. Ministério da Saúde. Quantas doses da vacina são necessárias? Brasília, DF: Ministério da Saúde, 2025. Disponível em: https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/f/febre-amarela/faq/faq/prevencao-e-vacinacao/quantas-doses-da-vacina-sao.
+Uso: Apoio à explicação do quiz sobre vacinação infantil.
+
+[7] BRASIL. Ministério da Saúde. Proteja-se! Saúde do viajante. Brasília, DF: Ministério da Saúde, [s.d.]. Disponível em: https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/s/saude-do-viajante/proteja-se.
+Uso: Cuidados para reduzir picadas: vestuário e uso de repelente.
+
+[8] PIRACICABA. Prefeitura Municipal. Horário de funcionamento das salas de vacina nas unidades de saúde. Piracicaba, 18 out. 2023. Atualizado em 14 ago. 2026. Disponível em: https://piracicaba.sp.gov.br/servicos/horario-de-funcionamento-das-salas-de-vacina-nas-unidades-de-saude/.
+Uso: Canal local para consulta de horários.
+
+[9] BRASIL. Ministério da Saúde. Qual a relação entre macacos e a febre amarela? Eles transmitem a doença? Brasília, DF: Ministério da Saúde, 2025. Disponível em: https://www.gov.br/saude/pt-br/acesso-a-informacao/faq/vacinacao-febre-amarela/qual-a-relacao-entre-macacos.
+Uso: Esclarecimento público sobre os primatas como vítimas e sentinelas.
+
+[10] BRASIL. Ministério da Saúde. Boletins Epidemiológicos — Febre Amarela: série histórica de casos e óbitos, 2000–2024. Brasília, DF: Ministério da Saúde, 2024. Disponível em: https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/f/febre-amarela.
+Uso da fonte no site: Dados de casos confirmados e óbitos por ano para o gráfico-herói da seção Dados.
+
+[11] ORGANIZAÇÃO PAN-AMERICANA DA SAÚDE. Atualização Epidemiológica: Febre Amarela na Região das Américas. Washington, D.C.: OPAS/OMS, 24 abr. 2025. Disponível em: https://www.paho.org/pt/alertas-e-atualizacoes-epidemiologicas.
+Uso da fonte no site: Dados de letalidade e atualização de casos 2024–2025 para os KPIs e gráfico de óbitos.
+
+[12] BRASIL. Ministério da Saúde. Cobertura Vacinal — Febre Amarela. Painel InfoMS. Brasília, DF: Ministério da Saúde, 2024. Disponível em: https://infoms.saude.gov.br/extensions/SEIDIGI_DEMAS_VACINACAO_FEBRE_AMARELA/index.html.
+Uso da fonte no site: Série histórica de cobertura vacinal para o gráfico de vacinação e KPI de cobertura recente.
