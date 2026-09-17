@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import StatsSection from './components/StatsSection';
 import Preloader from './components/Preloader';
-import { useAnimations } from './hooks/useAnimations';
+import { useGsapAnimations } from './hooks/useGsapAnimations';
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -13,9 +13,10 @@ export default function App() {
   const [progress, setProgress] = useState(0);
   const [preloaderComplete, setPreloaderComplete] = useState(false);
   const progressRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
 
-  // Hook de animações
-  useAnimations();
+  // Hook de animações com rootRef como escopo
+  useGsapAnimations(rootRef);
 
   // Intersection Observer for reveal animations
   useEffect(() => {
@@ -136,7 +137,7 @@ export default function App() {
   }, [gameState, clearGameItems]);
 
   return (
-    <div className="js-motion">
+    <div className="js-motion" ref={rootRef}>
       <Preloader onComplete={() => setPreloaderComplete(true)} />
       <a className="skip" href="#inicio">Ir para o conteúdo</a>
       <div className="reading-progress" ref={progressRef} aria-hidden="true" style={{ transform: 'scaleX(0)' }}></div>

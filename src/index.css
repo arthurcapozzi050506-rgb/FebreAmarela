@@ -492,27 +492,7 @@ footer small { font-size: .72rem; }
 
 main { overflow-x: clip; }
 
-/* GSAP animation preparation - elements start hidden, revealed by GSAP */
-.js-motion .reveal,
-.js-motion .section-heading,
-.js-motion .info-card,
-.js-motion .cycle-card,
-.js-motion .team-grid li {
-  visibility: hidden;
-}
-
-/* Ensure content is visible without JS or with reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .js-motion .reveal,
-  .js-motion .section-heading,
-  .js-motion .info-card,
-  .js-motion .cycle-card,
-  .js-motion .team-grid li {
-    visibility: visible !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-}
+/* Content is always visible - animations are progressive enhancement only */
 
 /* Smooth transitions for header */
 .header {
