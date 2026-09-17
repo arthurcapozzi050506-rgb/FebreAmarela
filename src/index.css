@@ -491,3 +491,48 @@ footer small { font-size: .72rem; }
 }
 
 main { overflow-x: clip; }
+
+/* GSAP animation preparation - elements start hidden, revealed by GSAP */
+.js-motion .reveal,
+.js-motion .section-heading,
+.js-motion .info-card,
+.js-motion .cycle-card,
+.js-motion .team-grid li {
+  visibility: hidden;
+}
+
+/* Ensure content is visible without JS or with reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .js-motion .reveal,
+  .js-motion .section-heading,
+  .js-motion .info-card,
+  .js-motion .cycle-card,
+  .js-motion .team-grid li {
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Smooth transitions for header */
+.header {
+  transition: height 0.3s ease;
+}
+
+/* Performance hints for animated elements */
+.foliage,
+.sun-disc,
+.floating-note,
+.hero-picture img {
+  will-change: transform;
+}
+
+/* Disable will-change for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .foliage,
+  .sun-disc,
+  .floating-note,
+  .hero-picture img {
+    will-change: auto;
+  }
+}
