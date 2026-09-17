@@ -102,18 +102,36 @@ function initHero(q: ReturnType<typeof gsap.utils.selector>, rootRef: RefObject<
 
   const tl = gsap.timeline({ delay: 0.3 });
 
-  // SplitText no título
+  // SplitText no título - aguardar fontes carregarem
   const title = q('#inicio h1')[0];
   if (title) {
-    const split = new SplitText(title, { type: 'chars' });
-    gsap.set(split.chars, { autoAlpha: 0, y: 24 });
-    tl.to(split.chars, {
-      autoAlpha: 1,
-      y: 0,
-      duration: 0.8,
-      stagger: 0.02,
-      ease: 'power2.out',
-    }, 0);
+    // Preservar aria-label para acessibilidade
+    const originalText = title.textContent || '';
+    title.setAttribute('aria-label', originalText);
+    
+    // Aguardar fontes antes de dividir
+    document.fonts.ready.then(() => {
+      const split = new SplitText(title, { type: 'chars,words' });
+      gsap.set(split.chars, { autoAlpha: 0, y: 24 });
+      gsap.to(split.chars, {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.02,
+        ease: 'power2.out',
+      });
+      
+      // Re-split em resize
+      let resizeTimer: number;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(() => {
+          split.revert();
+          const newSplit = new SplitText(title, { type: 'chars,words' });
+          gsap.set(newSplit.chars, { autoAlpha: 1, y: 0 });
+        }, 250);
+      });
+    });
   }
 
   // Eyebrow
