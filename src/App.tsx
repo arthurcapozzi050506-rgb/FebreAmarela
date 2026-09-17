@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import StatsSection from './components/StatsSection';
+import Preloader from './components/Preloader';
+import { useAnimations } from './hooks/useAnimations';
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -9,7 +11,11 @@ export default function App() {
   const [quizFinished, setQuizFinished] = useState(false);
   const [quizSelected, setQuizSelected] = useState<boolean | null>(null);
   const [progress, setProgress] = useState(0);
+  const [preloaderComplete, setPreloaderComplete] = useState(false);
   const progressRef = useRef<HTMLDivElement>(null);
+
+  // Hook de animações
+  useAnimations();
 
   // Intersection Observer for reveal animations
   useEffect(() => {
@@ -131,6 +137,7 @@ export default function App() {
 
   return (
     <div className="js-motion">
+      <Preloader onComplete={() => setPreloaderComplete(true)} />
       <a className="skip" href="#inicio">Ir para o conteúdo</a>
       <div className="reading-progress" ref={progressRef} aria-hidden="true" style={{ transform: 'scaleX(0)' }}></div>
 
