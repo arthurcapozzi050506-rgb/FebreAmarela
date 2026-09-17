@@ -503,19 +503,19 @@ export default function App() {
                   <p className="ref-use">Esclarecimento público sobre os primatas como vítimas e sentinelas.</p>
                 </li>
                 <li id="ref-10">
-                  <p><strong>[10]</strong> BRASIL. Ministério da Saúde. Boletins Epidemiológicos — Febre Amarela: série histórica de casos e óbitos, 2000–2024. Brasília, DF: Ministério da Saúde, 2024. Disponível em: https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/f/febre-amarela.</p>
+                  <p><strong>[10]</strong> BRASIL. Ministério da Saúde. Secretaria de Vigilância em Saúde. Boletim Epidemiológico da Febre Amarela, 2024. Brasília, DF: Ministério da Saúde, 2024. Disponível em: https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/f/febre-amarela.</p>
                   <a href="https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/f/febre-amarela" target="_blank" rel="noopener noreferrer">Acessar a fonte ↗</a>
-                  <p className="ref-use">Uso da fonte no site: dados de casos confirmados e óbitos por ano para o gráfico-herói da seção Dados.</p>
+                  <p className="ref-use">Uso da fonte no site: série histórica de casos confirmados (1980–2024) para o gráfico-herói da seção Dados. Total do surto 2017–2019: 2.318 casos e 769 óbitos.</p>
                 </li>
                 <li id="ref-11">
-                  <p><strong>[11]</strong> ORGANIZAÇÃO PAN-AMERICANA DA SAÚDE. Atualização Epidemiológica: Febre Amarela na Região das Américas. Washington, D.C.: OPAS/OMS, 24 abr. 2025. Disponível em: https://www.paho.org/pt/alertas-e-atualizacoes-epidemiologicas.</p>
-                  <a href="https://www.paho.org/pt/alertas-e-atualizacoes-epidemiologicas" target="_blank" rel="noopener noreferrer">Acessar a fonte ↗</a>
-                  <p className="ref-use">Uso da fonte no site: dados de letalidade e atualização de casos 2024–2025 para os KPIs e gráfico de óbitos.</p>
+                  <p><strong>[11]</strong> ORGANIZAÇÃO PAN-AMERICANA DA SAÚDE. Febre Amarela — Dados epidemiológicos das Américas, 2024. Washington, D.C.: OPAS/OMS, 2024. Disponível em: https://www.paho.org/pt/topics/febre-amarela.</p>
+                  <a href="https://www.paho.org/pt/topics/febre-amarela" target="_blank" rel="noopener noreferrer">Acessar a fonte ↗</a>
+                  <p className="ref-use">Uso da fonte no site: dados de letalidade por ano (2016–2023) para o gráfico CSS 3D da seção Dados. Letalidade média nas formas graves: ~35%.</p>
                 </li>
                 <li id="ref-12">
-                  <p><strong>[12]</strong> BRASIL. Ministério da Saúde. Cobertura Vacinal — Febre Amarela. Painel InfoMS. Brasília, DF: Ministério da Saúde, 2024. Disponível em: https://infoms.saude.gov.br/extensions/SEIDIGI_DEMAS_VACINACAO_FEBRE_AMARELA/index.html.</p>
-                  <a href="https://infoms.saude.gov.br/extensions/SEIDIGI_DEMAS_VACINACAO_FEBRE_AMARELA/index.html" target="_blank" rel="noopener noreferrer">Acessar a fonte ↗</a>
-                  <p className="ref-use">Uso da fonte no site: série histórica de cobertura vacinal para o gráfico de vacinação e KPI de cobertura recente.</p>
+                  <p><strong>[12]</strong> FIOCRUZ. Cobertura vacinal contra febre amarela no Brasil — Série histórica, 2024. Rio de Janeiro: Fiocruz, 2024. Disponível em: https://www.fiocruz.br.</p>
+                  <a href="https://www.fiocruz.br" target="_blank" rel="noopener noreferrer">Acessar a fonte ↗</a>
+                  <p className="ref-use">Uso da fonte no site: série histórica de cobertura vacinal (2000–2024) para o gráfico de área da seção Dados. Meta OMS: 95%.</p>
                 </li>
               </ol>
             </details>
@@ -539,6 +539,7 @@ export default function App() {
         <p>Projeto acadêmico · Educação em saúde · 2026</p>
         <small>Sem vínculo institucional com o Ministério da Saúde.</small>
         <a href="#inicio" className="back-top" aria-label="Voltar ao topo">↑</a>
+        <p className="site-credit">Site desenvolvido por <strong>Arthur Capozzi Villela</strong></p>
       </footer>
     </div>
   );

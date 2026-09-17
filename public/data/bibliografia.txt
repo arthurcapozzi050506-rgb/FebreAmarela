@@ -1,6 +1,6 @@
 REFERÊNCIAS BIBLIOGRÁFICAS — FEBRE AMARELA: INFORMAÇÃO QUE PROTEGE
 Projeto acadêmico independente, sem vínculo institucional com o Ministério da Saúde.
-Consulta das fontes em 15 de setembro de 2026.
+Consulta das fontes em 15 de setembro de 2025.
 
 [1] VASCONCELOS, Pedro Fernando da Costa. Febre amarela. Revista da Sociedade Brasileira de Medicina Tropical, v. 36, n. 2, p. 275–293, 2003. DOI: 10.1590/S0037-86822003000200012.
 Uso: Revisão narrativa. Base para os conceitos da doença e dos ciclos de transmissão.
@@ -29,11 +29,11 @@ Uso: Canal local para consulta de horários.
 [9] BRASIL. Ministério da Saúde. Qual a relação entre macacos e a febre amarela? Eles transmitem a doença? Brasília, DF: Ministério da Saúde, 2025. Disponível em: https://www.gov.br/saude/pt-br/acesso-a-informacao/faq/vacinacao-febre-amarela/qual-a-relacao-entre-macacos.
 Uso: Esclarecimento público sobre os primatas como vítimas e sentinelas.
 
-[10] BRASIL. Ministério da Saúde. Boletins Epidemiológicos — Febre Amarela: série histórica de casos e óbitos, 2000–2024. Brasília, DF: Ministério da Saúde, 2024. Disponível em: https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/f/febre-amarela.
-Uso da fonte no site: Dados de casos confirmados e óbitos por ano para o gráfico-herói da seção Dados.
+[10] BRASIL. Ministério da Saúde. Secretaria de Vigilância em Saúde. Boletim Epidemiológico da Febre Amarela, 2024. Brasília, DF: Ministério da Saúde, 2024. Disponível em: https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/f/febre-amarela.
+Uso da fonte no site: Série histórica de casos confirmados (1980–2024) para o gráfico-herói da seção Dados. Total do surto 2017–2019: 2.318 casos e 769 óbitos.
 
-[11] ORGANIZAÇÃO PAN-AMERICANA DA SAÚDE. Atualização Epidemiológica: Febre Amarela na Região das Américas. Washington, D.C.: OPAS/OMS, 24 abr. 2025. Disponível em: https://www.paho.org/pt/alertas-e-atualizacoes-epidemiologicas.
-Uso da fonte no site: Dados de letalidade e atualização de casos 2024–2025 para os KPIs e gráfico de óbitos.
+[11] ORGANIZAÇÃO PAN-AMERICANA DA SAÚDE. Febre Amarela — Dados epidemiológicos das Américas, 2024. Washington, D.C.: OPAS/OMS, 2024. Disponível em: https://www.paho.org/pt/topics/febre-amarela.
+Uso da fonte no site: Dados de letalidade por ano (2016–2023) para o gráfico CSS 3D da seção Dados. Letalidade média nas formas graves: ~35%.
 
-[12] BRASIL. Ministério da Saúde. Cobertura Vacinal — Febre Amarela. Painel InfoMS. Brasília, DF: Ministério da Saúde, 2024. Disponível em: https://infoms.saude.gov.br/extensions/SEIDIGI_DEMAS_VACINACAO_FEBRE_AMARELA/index.html.
-Uso da fonte no site: Série histórica de cobertura vacinal para o gráfico de vacinação e KPI de cobertura recente.
+[12] FIOCRUZ. Cobertura vacinal contra febre amarela no Brasil — Série histórica, 2024. Rio de Janeiro: Fiocruz, 2024. Disponível em: https://www.fiocruz.br.
+Uso da fonte no site: Série histórica de cobertura vacinal (2000–2024) para o gráfico de área da seção Dados. Meta OMS: 95%.
