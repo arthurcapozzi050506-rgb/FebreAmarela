@@ -1,16 +1,32 @@
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, RefObject } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
-export function useAnimations() {
-  const ctx = useRef<gsap.Context | null>(null);
+// Failsafe: força exibição de todo conteúdo
+export function forceShowAll(root: HTMLElement | null) {
+  if (!root) return;
+  root.querySelectorAll('*').forEach((el) => {
+    const htmlEl = el as HTMLElement;
+    if (
+      htmlEl.style.visibility === 'hidden' ||
+      htmlEl.style.opacity === '0' ||
+      htmlEl.style.transform
+    ) {
+      gsap.set(htmlEl, { clearProps: 'opacity,visibility,transform' });
+    }
+  });
+}
 
-  useEffect(() => {
+export function useGsapAnimations(rootRef: RefObject<HTMLElement>) {
+  useLayoutEffect(() => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) return;
+
+    const root = rootRef.current;
+    if (!root) return;
 
     // Config mobile
     if (window.matchMedia('(pointer: coarse)').matches) {
@@ -20,33 +36,33 @@ export function useAnimations() {
       });
     }
 
-    // Aguardar um frame para garantir que o DOM está pronto
-    const initTimeout = setTimeout(() => {
-      ctx.current = gsap.context(() => {
-        // Hero coreografado
-        initHero();
-        
-        // Reveals de seção
-        initSectionReveals();
-        
-        // Scrollytelling da transmissão
-        initTransmissionScrollytelling();
-        
-        // Imagens com reveal de canto
-        initImageReveals();
-        
-        // Loops ambientes
-        initAmbientLoops();
-        
-        // Micro-interações
-        initMicroInteractions();
-        
-        // Refresh após fontes
-        document.fonts.ready.then(() => {
+    const ctx = gsap.context(() => {
+      try {
+        const q = gsap.utils.selector(rootRef);
+
+        // === HERO COREOGRAFADO ===
+        initHero(q, rootRef);
+
+        // === REVEALS DE SEÇÃO (padrão seguro) ===
+        initSectionReveals(q);
+
+        // === SCROLLYTELLING DA TRANSMISSÃO ===
+        initTransmissionScrollytelling(q, rootRef);
+
+        // === IMAGENS COM REVEAL DE CANTO ===
+        initImageReveals(q);
+
+        // === LOOPS AMBIENTES ===
+        initAmbientLoops(q);
+
+        // === MICRO-INTERAÇÕES ===
+        initMicroInteractions(q, rootRef);
+
+        // === FAILSAFE: fonts + resize ===
+        document.fonts?.ready.then(() => {
           ScrollTrigger.refresh();
         });
 
-        // Debounce resize
         let resizeTimer: number;
         window.addEventListener('resize', () => {
           clearTimeout(resizeTimer);
@@ -54,29 +70,46 @@ export function useAnimations() {
             ScrollTrigger.refresh();
           }, 250);
         });
-      });
-    }, 100);
+
+        // === FAILSAFE: após 3s, força exibir se algo estiver oculto ===
+        window.addEventListener('load', () => {
+          setTimeout(() => {
+            forceShowAll(root);
+          }, 3000);
+        });
+
+      } catch (e) {
+        console.error('Animação falhou — exibindo conteúdo:', e);
+        forceShowAll(root);
+      }
+    }, rootRef);
+
+    // === FAILSAFE: erro global de JS ===
+    const errorHandler = () => forceShowAll(root);
+    window.addEventListener('error', errorHandler);
 
     return () => {
-      clearTimeout(initTimeout);
-      ctx.current?.revert();
+      window.removeEventListener('error', errorHandler);
+      ctx.revert();
     };
-  }, []);
+  }, [rootRef]);
 }
 
-function initHero() {
-  const hero = document.querySelector('#inicio');
+// === HERO ===
+function initHero(q: ReturnType<typeof gsap.utils.selector>, rootRef: RefObject<HTMLElement>) {
+  const hero = q('#inicio')[0];
   if (!hero) return;
 
   const tl = gsap.timeline({ delay: 0.3 });
 
   // SplitText no título
-  const title = hero.querySelector('h1');
+  const title = q('#inicio h1')[0];
   if (title) {
     const split = new SplitText(title, { type: 'chars' });
-    tl.from(split.chars, {
-      autoAlpha: 0,
-      y: 24,
+    gsap.set(split.chars, { autoAlpha: 0, y: 24 });
+    tl.to(split.chars, {
+      autoAlpha: 1,
+      y: 0,
       duration: 0.8,
       stagger: 0.02,
       ease: 'power2.out',
@@ -84,62 +117,67 @@ function initHero() {
   }
 
   // Eyebrow
-  const eyebrow = hero.querySelector('.eyebrow');
+  const eyebrow = q('#inicio .eyebrow')[0];
   if (eyebrow) {
-    tl.from(eyebrow, {
-      autoAlpha: 0,
-      y: 10,
+    gsap.set(eyebrow, { autoAlpha: 0, y: 10 });
+    tl.to(eyebrow, {
+      autoAlpha: 1,
+      y: 0,
       duration: 0.6,
       ease: 'power2.out',
     }, 0.2);
   }
 
   // Handwritten
-  const handwritten = hero.querySelector('.handwritten');
+  const handwritten = q('#inicio .handwritten')[0];
   if (handwritten) {
-    tl.from(handwritten, {
-      autoAlpha: 0,
-      y: 10,
+    gsap.set(handwritten, { autoAlpha: 0, y: 10 });
+    tl.to(handwritten, {
+      autoAlpha: 1,
+      y: 0,
       duration: 0.6,
       ease: 'power2.out',
     }, 0.3);
   }
 
   // Lead
-  const lead = hero.querySelector('.lead');
+  const lead = q('#inicio .lead')[0];
   if (lead) {
-    tl.from(lead, {
-      autoAlpha: 0,
-      y: 10,
+    gsap.set(lead, { autoAlpha: 0, y: 10 });
+    tl.to(lead, {
+      autoAlpha: 1,
+      y: 0,
       duration: 0.6,
       ease: 'power2.out',
     }, 0.4);
   }
 
   // Actions
-  const actions = hero.querySelector('.actions');
+  const actions = q('#inicio .actions')[0];
   if (actions) {
-    tl.from(actions, {
-      autoAlpha: 0,
-      y: 10,
+    gsap.set(actions, { autoAlpha: 0, y: 10 });
+    tl.to(actions, {
+      autoAlpha: 1,
+      y: 0,
       duration: 0.6,
       ease: 'power2.out',
     }, 0.5);
   }
 
   // Hero art
-  const heroArt = hero.querySelector('.hero-art');
+  const heroArt = q('#inicio .hero-art')[0];
   if (heroArt) {
-    tl.from(heroArt, {
-      autoAlpha: 0,
-      scale: 0.95,
+    gsap.set(heroArt, { autoAlpha: 0, scale: 0.95 });
+    tl.to(heroArt, {
+      autoAlpha: 1,
+      scale: 1,
       duration: 1,
       ease: 'power2.out',
     }, 0.3);
   }
 
   // Parallax com scrub
-  const sunDisc = hero.querySelector('.sun-disc');
+  const sunDisc = q('#inicio .sun-disc')[0];
   if (sunDisc) {
     gsap.to(sunDisc, {
       y: -50,
@@ -153,7 +191,7 @@ function initHero() {
     });
   }
 
-  const heroPicture = hero.querySelector('.hero-picture');
+  const heroPicture = q('#inicio .hero-picture')[0];
   if (heroPicture) {
     gsap.to(heroPicture, {
       y: -30,
@@ -167,7 +205,7 @@ function initHero() {
     });
   }
 
-  const foliage = hero.querySelector('.foliage-hero');
+  const foliage = q('#inicio .foliage-hero')[0];
   if (foliage) {
     gsap.to(foliage, {
       y: -80,
@@ -181,7 +219,7 @@ function initHero() {
     });
   }
 
-  const floatingNote = hero.querySelector('.floating-note');
+  const floatingNote = q('#inicio .floating-note')[0];
   if (floatingNote) {
     gsap.to(floatingNote, {
       y: -100,
@@ -196,78 +234,78 @@ function initHero() {
   }
 }
 
-function initSectionReveals() {
-  const sections = document.querySelectorAll('.section, .transmission, .vaccine-section, .location-section');
+// === REVEALS DE SEÇÃO (padrão seguro) ===
+function initSectionReveals(q: ReturnType<typeof gsap.utils.selector>) {
+  const targets = q('.reveal, .section-heading, .info-card, .cycle-card, .team-grid li');
   
-  sections.forEach(section => {
-    const reveals = section.querySelectorAll('.reveal, .section-heading, .info-card, .cycle-card, .team-grid li');
-    
-    if (reveals.length > 0) {
-      gsap.from(reveals, {
-        autoAlpha: 0,
-        y: 42,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 80%',
-          toggleActions: 'play none none none',
-        },
-      });
-    }
+  gsap.set(targets, { autoAlpha: 0, y: 42 });
+  
+  targets.forEach((el) => {
+    gsap.to(el, {
+      autoAlpha: 1,
+      y: 0,
+      duration: 0.8,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 85%',
+        toggleActions: 'play none none none',
+        once: true,
+      },
+    });
+  });
 
-    // Eyebrows com clip-path
-    const eyebrows = section.querySelectorAll('.eyebrow');
-    eyebrows.forEach(eyebrow => {
-      gsap.from(eyebrow, {
-        clipPath: 'inset(0% 100% 0% 0%)',
-        duration: 0.8,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: eyebrow,
-          start: 'top 85%',
-          toggleActions: 'play none none none',
-        },
-      });
+  // Eyebrows com clip-path
+  const eyebrows = q('.eyebrow');
+  eyebrows.forEach((eyebrow) => {
+    gsap.set(eyebrow, { clipPath: 'inset(0% 100% 0% 0%)' });
+    gsap.to(eyebrow, {
+      clipPath: 'inset(0% 0% 0% 0%)',
+      duration: 0.8,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: eyebrow,
+        start: 'top 85%',
+        toggleActions: 'play none none none',
+        once: true,
+      },
     });
   });
 }
 
-function initTransmissionScrollytelling() {
-  const transmission = document.querySelector('#transmissao');
-  if (!transmission) return;
+// === SCROLLYTELLING DA TRANSMISSÃO ===
+function initTransmissionScrollytelling(
+  q: ReturnType<typeof gsap.utils.selector>,
+  rootRef: RefObject<HTMLElement>
+) {
+  const section = q('#transmissao')[0];
+  if (!section) return;
 
   const isDesktop = window.matchMedia('(min-width: 900px)').matches;
-  
+
   if (isDesktop) {
-    // Pin da seção com scrub
-    ScrollTrigger.create({
-      trigger: transmission,
-      start: 'top top',
-      end: '+=150%',
-      pin: true,
-      scrub: 0.35,
+    const cards = q('#transmissao .cycle-card');
+    gsap.set(cards, { autoAlpha: 0, y: 30 });
+
+    // Timeline única com pin
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end: '+=150%',
+        pin: true,
+        scrub: 0.35,
+        anticipatePin: 1,
+      },
     });
 
-    // Cards revezando
-    const cards = transmission.querySelectorAll('.cycle-card');
-    cards.forEach((card, i) => {
-      gsap.fromTo(card,
-        { autoAlpha: 0, y: 30 },
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 1,
-          scrollTrigger: {
-            trigger: transmission,
-            start: `top+=${i * 50}% top`,
-            end: `top+=${(i + 1) * 50}% top`,
-            scrub: true,
-          },
-        }
-      );
-    });
+    // Cards revezando dentro da timeline
+    if (cards[0]) {
+      tl.to(cards[0], { autoAlpha: 1, y: 0, duration: 1 });
+    }
+    if (cards[1]) {
+      tl.to(cards[1], { autoAlpha: 1, y: 0, duration: 1 }, 0.5);
+    }
 
     // Barra de progresso
     const progressBar = document.createElement('div');
@@ -275,10 +313,11 @@ function initTransmissionScrollytelling() {
     const progressFill = document.createElement('div');
     progressFill.style.cssText = 'width:100%;height:0%;background:var(--yellow);transition:height .1s;';
     progressBar.appendChild(progressFill);
-    transmission.appendChild(progressBar);
+    section.style.position = 'relative';
+    section.appendChild(progressBar);
 
     ScrollTrigger.create({
-      trigger: transmission,
+      trigger: section,
       start: 'top top',
       end: '+=150%',
       onUpdate: (self) => {
@@ -287,34 +326,41 @@ function initTransmissionScrollytelling() {
     });
   } else {
     // Mobile: reveals simples
-    const cards = transmission.querySelectorAll('.cycle-card');
-    gsap.from(cards, {
-      autoAlpha: 0,
-      y: 30,
-      duration: 0.8,
-      stagger: 0.2,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: transmission,
-        start: 'top 70%',
-        toggleActions: 'play none none none',
-      },
+    const cards = q('#transmissao .cycle-card');
+    gsap.set(cards, { autoAlpha: 0, y: 30 });
+    
+    cards.forEach((card) => {
+      gsap.to(card, {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+          once: true,
+        },
+      });
     });
   }
 }
 
-function initImageReveals() {
-  const images = document.querySelectorAll('.wildlife-picture, .vaccine-picture, .hero-picture');
-  
-  images.forEach(img => {
-    gsap.from(img, {
-      clipPath: 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)',
+// === IMAGENS COM REVEAL DE CANTO ===
+function initImageReveals(q: ReturnType<typeof gsap.utils.selector>) {
+  const images = q('.wildlife-picture, .vaccine-picture, .hero-picture');
+
+  images.forEach((img) => {
+    gsap.set(img, { clipPath: 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)' });
+    gsap.to(img, {
+      clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
       duration: 1.2,
       ease: 'power2.out',
       scrollTrigger: {
         trigger: img,
         start: 'top 80%',
         toggleActions: 'play none none none',
+        once: true,
       },
     });
 
@@ -335,10 +381,11 @@ function initImageReveals() {
   });
 }
 
-function initAmbientLoops() {
+// === LOOPS AMBIENTES ===
+function initAmbientLoops(q: ReturnType<typeof gsap.utils.selector>) {
   // Folhagens balançando
-  const foliages = document.querySelectorAll('.foliage');
-  foliages.forEach(foliage => {
+  const foliages = q('.foliage');
+  foliages.forEach((foliage) => {
     const tl = gsap.to(foliage, {
       rotation: '+=3',
       duration: 4,
@@ -347,7 +394,6 @@ function initAmbientLoops() {
       repeat: -1,
     });
 
-    // Pausar quando fora de vista
     ScrollTrigger.create({
       trigger: foliage,
       start: 'top bottom',
@@ -360,7 +406,7 @@ function initAmbientLoops() {
   });
 
   // Sol respirando
-  const sunDisc = document.querySelector('.sun-disc');
+  const sunDisc = q('.sun-disc')[0];
   if (sunDisc) {
     const sunTl = gsap.to(sunDisc, {
       scale: 1.03,
@@ -382,7 +428,7 @@ function initAmbientLoops() {
   }
 
   // Nota flutuante
-  const floatingNote = document.querySelector('.floating-note');
+  const floatingNote = q('.floating-note')[0];
   if (floatingNote) {
     const noteTl = gsap.to(floatingNote, {
       y: '-=10',
@@ -404,16 +450,20 @@ function initAmbientLoops() {
   }
 }
 
-function initMicroInteractions() {
+// === MICRO-INTERAÇÕES ===
+function initMicroInteractions(
+  q: ReturnType<typeof gsap.utils.selector>,
+  rootRef: RefObject<HTMLElement>
+) {
   // Magnetic hover em botões (desktop only)
   if (!window.matchMedia('(pointer: coarse)').matches) {
-    const buttons = document.querySelectorAll<HTMLElement>('.button, .text-link');
-    buttons.forEach(button => {
+    const buttons = q('.button, .text-link').filter((el): el is HTMLElement => el instanceof HTMLElement);
+    buttons.forEach((button) => {
       button.addEventListener('mousemove', (e: MouseEvent) => {
-        const rect = (button as HTMLElement).getBoundingClientRect();
+        const rect = button.getBoundingClientRect();
         const x = e.clientX - rect.left - rect.width / 2;
         const y = e.clientY - rect.top - rect.height / 2;
-        
+
         gsap.to(button, {
           x: x * 0.1,
           y: y * 0.1,
@@ -448,16 +498,16 @@ function initMicroInteractions() {
     });
 
     // Tilt 3D em cards
-    const cards = document.querySelectorAll<HTMLElement>('.info-card, .cycle-card, .kpi-card, .stat-mini-card');
-    cards.forEach(card => {
+    const cards = q('.info-card, .cycle-card, .kpi-card, .stat-mini-card').filter((el): el is HTMLElement => el instanceof HTMLElement);
+    cards.forEach((card) => {
       card.addEventListener('mousemove', (e: MouseEvent) => {
-        const rect = (card as HTMLElement).getBoundingClientRect();
+        const rect = card.getBoundingClientRect();
         const x = (e.clientX - rect.left) / rect.width;
         const y = (e.clientY - rect.top) / rect.height;
-        
+
         const rotateX = (y - 0.5) * -4;
         const rotateY = (x - 0.5) * 4;
-        
+
         gsap.to(card, {
           rotateX,
           rotateY,
@@ -479,7 +529,7 @@ function initMicroInteractions() {
   }
 
   // Header compacto ao rolar
-  const header = document.querySelector('.header');
+  const header = q('.header')[0];
   if (header) {
     ScrollTrigger.create({
       start: 100,
