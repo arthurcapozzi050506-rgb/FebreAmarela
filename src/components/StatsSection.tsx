@@ -1,27 +1,34 @@
 import { useEffect, useRef, useState } from 'react';
 import dados from '../data/dados.json';
 
+// Valores finais dos contadores (fonte: Ministério da Saúde/SVS, 2024)
+const FINAL_VALUES = {
+  casos: dados.kpis.casos_surto_2017_2019,
+  obitos: dados.kpis.obitos_surto_2017_2019,
+  ultimo: dados.kpis.ultimo_caso_urbano,
+  meta: dados.kpis.meta_cobertura,
+};
+
 export default function StatsSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const countersRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [kpiAnimated, setKpiAnimated] = useState(false);
-  const [counters, setCounters] = useState({
-    casos: 0,
-    obitos: 0,
-    ultimo: 0,
-    meta: 0,
-  });
-  const reducedMotion = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
+  
+  // CORREÇÃO B: Estado inicial = VALORES FINAIS (nunca 0)
+  const [counters, setCounters] = useState(FINAL_VALUES);
+  const animationStarted = useRef(false);
 
-  // IntersectionObserver to trigger animations
+  // IntersectionObserver to trigger chart animations
   useEffect(() => {
     if (!sectionRef.current) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer.disconnect();
+          }
+        });
       },
       { threshold: 0.15 }
     );
@@ -29,44 +36,59 @@ export default function StatsSection() {
     return () => observer.disconnect();
   }, []);
 
-  // Animate KPI counters
+  // CORREÇÃO B: Animação de contadores à prova de falhas
   useEffect(() => {
-    if (!isVisible || kpiAnimated) return;
-    setKpiAnimated(true);
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) return; // reduced-motion: valores finais direto, sem animação
 
-    const targets = {
-      casos: dados.kpis.casos_surto_2017_2019,
-      obitos: dados.kpis.obitos_surto_2017_2019,
-      ultimo: dados.kpis.ultimo_caso_urbano,
-      meta: dados.kpis.meta_cobertura,
-    };
+    const el = countersRef.current;
+    if (!el) return;
 
-    if (reducedMotion) {
-      setCounters(targets);
-      return;
-    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting || animationStarted.current) return;
+          animationStarted.current = true;
+          io.disconnect();
 
-    const duration = 1800;
-    const start = performance.now();
-    let raf: number;
+          // Anima 0 → final (1.6s, easeOutCubic)
+          const t0 = performance.now();
+          const dur = 1600;
+          
+          const tick = (now: number) => {
+            const p = Math.min((now - t0) / dur, 1);
+            const e = 1 - Math.pow(1 - p, 3);
+            setCounters({
+              casos: Math.round(FINAL_VALUES.casos * e),
+              obitos: Math.round(FINAL_VALUES.obitos * e),
+              ultimo: Math.round(FINAL_VALUES.ultimo * e),
+              meta: Math.round(FINAL_VALUES.meta * e),
+            });
+            if (p < 1) requestAnimationFrame(tick);
+          };
+          
+          // Começa do zero AGORA (já visível)
+          setCounters({ casos: 0, obitos: 0, ultimo: 0, meta: 0 });
+          requestAnimationFrame(tick);
+        });
+      },
+      { threshold: 0.2 }
+    );
 
-    const animate = (now: number) => {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
-      setCounters({
-        casos: Math.round(targets.casos * eased),
-        obitos: Math.round(targets.obitos * eased),
-        ultimo: targets.ultimo,
-        meta: Math.round(targets.meta * eased),
-      });
+  // CORREÇÃO B: Failsafe - 2.5s após montar, força valores finais se não chegaram
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setCounters((cur) => (cur.casos === FINAL_VALUES.casos ? cur : FINAL_VALUES));
+    }, 2500);
+    return () => clearTimeout(t);
+  }, []);
 
-      if (progress < 1) raf = requestAnimationFrame(animate);
-    };
-    raf = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(raf);
-  }, [isVisible, kpiAnimated, reducedMotion]);
+  // Formatação correta (pt-BR): ano SEM separador de milhar
+  const fmt = (n: number, isYear = false) => (isYear ? String(n) : n.toLocaleString('pt-BR'));
 
   return (
     <section id="dados" className="section wrap stats-section" ref={sectionRef}>
@@ -136,21 +158,21 @@ export default function StatsSection() {
       </div>
 
       {/* 4 Contadores animados */}
-      <div className="kpi-grid reveal">
+      <div className="kpi-grid reveal" ref={countersRef}>
         <div className="kpi-card kpi-highlight">
-          <div className="kpi-value">{counters.casos.toLocaleString('pt-BR')}</div>
+          <div className="kpi-value">{fmt(counters.casos)}</div>
           <div className="kpi-label">Casos no surto 2017–2019</div>
         </div>
         <div className="kpi-card kpi-highlight">
-          <div className="kpi-value">{counters.obitos.toLocaleString('pt-BR')}</div>
+          <div className="kpi-value">{fmt(counters.obitos)}</div>
           <div className="kpi-label">Óbitos no surto 2017–2019</div>
         </div>
         <div className="kpi-card">
-          <div className="kpi-value">{counters.ultimo}</div>
+          <div className="kpi-value">{fmt(counters.ultimo, true)}</div>
           <div className="kpi-label">Último caso urbano no Brasil</div>
         </div>
         <div className="kpi-card">
-          <div className="kpi-value">{counters.meta}<span className="kpi-suffix">%</span></div>
+          <div className="kpi-value">{fmt(counters.meta)}<span className="kpi-suffix">%</span></div>
           <div className="kpi-label">Meta de cobertura vacinal (OMS)</div>
         </div>
       </div>
