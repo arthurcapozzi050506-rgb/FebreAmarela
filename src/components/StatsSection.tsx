@@ -7,7 +7,12 @@ export default function StatsSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [kpiAnimated, setKpiAnimated] = useState(false);
-  const [counters, setCounters] = useState({ casos: 0, letalidade: 0, cobertura: 0, urbanos: 0 });
+  const [counters, setCounters] = useState({
+    casos: 0,
+    obitos: 0,
+    ultimo: 0,
+    meta: 0,
+  });
   const reducedMotion = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
 
   // IntersectionObserver to trigger animations
@@ -33,9 +38,9 @@ export default function StatsSection() {
 
     const targets = {
       casos: dados.kpis.casos_surto_2017_2019,
-      letalidade: dados.kpis.letalidade_media,
-      cobertura: dados.kpis.cobertura_vacinal_recente,
-      urbanos: dados.kpis.casos_urbanos_desde_1942,
+      obitos: dados.kpis.obitos_surto_2017_2019,
+      ultimo: dados.kpis.ultimo_caso_urbano,
+      meta: dados.kpis.meta_cobertura,
     };
 
     if (reducedMotion) {
@@ -54,9 +59,9 @@ export default function StatsSection() {
 
       setCounters({
         casos: Math.round(targets.casos * eased),
-        letalidade: Math.round(targets.letalidade * eased * 10) / 10,
-        cobertura: Math.round(targets.cobertura * eased * 10) / 10,
-        urbanos: targets.urbanos,
+        obitos: Math.round(targets.obitos * eased),
+        ultimo: targets.ultimo,
+        meta: Math.round(targets.meta * eased),
       });
 
       if (progress < 1) raf = requestAnimationFrame(animate);
@@ -73,91 +78,110 @@ export default function StatsSection() {
         <p>Números reais para entender a dimensão da febre amarela no Brasil. Cada dado conta uma história de prevenção e cuidado.</p>
       </div>
 
-      {/* KPIs */}
-      <div className="kpi-grid reveal">
-        <div className="kpi-card kpi-highlight">
-          <div className="kpi-value">{counters.casos.toLocaleString('pt-BR')}</div>
-          <div className="kpi-label">Casos confirmados no surto 2017–2019</div>
+      {/* Faixa de estatísticas - 4 mini-cards */}
+      <div className="stats-strip reveal">
+        <div className="stat-mini-card">
+          <div className="stat-mini-value">Desde 1942</div>
+          <div className="stat-mini-label">Sem ciclo urbano no Brasil</div>
         </div>
-        <div className="kpi-card">
-          <div className="kpi-value">{counters.letalidade}<span className="kpi-suffix">%</span></div>
-          <div className="kpi-label">Letalidade média nas formas graves</div>
+        <div className="stat-mini-card">
+          <div className="stat-mini-value">~35%</div>
+          <div className="stat-mini-label">Letalidade média (forma grave)</div>
         </div>
-        <div className="kpi-card">
-          <div className="kpi-value">{counters.cobertura}<span className="kpi-suffix">%</span></div>
-          <div className="kpi-label">Cobertura vacinal mais recente (meta: 95%)</div>
+        <div className="stat-mini-card">
+          <div className="stat-mini-value">95%</div>
+          <div className="stat-mini-label">Meta de cobertura vacinal (OMS)</div>
         </div>
-        <div className="kpi-card">
-          <div className="kpi-value">{counters.urbanos}</div>
-          <div className="kpi-label">Casos do ciclo urbano desde 1942</div>
+        <div className="stat-mini-card">
+          <div className="stat-mini-value">1 dose</div>
+          <div className="stat-mini-label">Proteção para toda a vida</div>
         </div>
       </div>
 
       {/* Gráfico-herói 3D: Casos por ano */}
       <div className="chart-block reveal">
-        <h3 className="chart-title">Casos confirmados de febre amarela no Brasil (2000–2024)</h3>
+        <h3 className="chart-title">🏔️ Casos confirmados de febre amarela no Brasil (1980–2024)</h3>
         <p className="chart-description">
-          O gráfico mostra a evolução anual dos casos. O surto de 2017–2018 foi o maior já registrado, com mais de 2.000 casos em dois anos. O que este dado ensina: a vigilância constante e a vacinação são fundamentais para evitar novos surtos.
+          O gráfico mostra a evolução dos casos ao longo das décadas. O surto de 2017–2019 foi o maior já registrado, com mais de 2.000 casos em três anos. O que este dado ensina: a vigilância constante e a vacinação são fundamentais para evitar novos surtos.
         </p>
         <Suspense fallback={<div className="chart-3d-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}>Carregando gráfico...</div>}>
-          <CasesChart3D data={dados.casos_por_ano.serie} />
+          <CasesChart3D data={dados.casos_por_ano.serie.map(d => ({ ano: d.ano, casos: d.casos }))} />
         </Suspense>
         <p className="source-inline">
-          Fonte: <a href={dados.casos_por_ano.fonte_url} target="_blank" rel="noopener noreferrer">Ministério da Saúde — Boletins Epidemiológicos ↗</a> · Consulta: {dados.casos_por_ano.data_consulta}
+          Fonte: <a href={dados.casos_por_ano.fonte_url} target="_blank" rel="noopener noreferrer">Ministério da Saúde / SVS — Boletim Epidemiológico da Febre Amarela, 2024 ↗</a> · Consulta: {dados.casos_por_ano.data_consulta}
         </p>
         <DataTable data={dados.casos_por_ano.serie} type="cases" />
       </div>
 
-      {/* Gráfico CSS 3D: Óbitos e letalidade */}
+      {/* Gráfico CSS 3D: Letalidade */}
       <div className="chart-block reveal">
-        <h3 className="chart-title">Óbitos por febre amarela no Brasil</h3>
+        <h3 className="chart-title">📊 Letalidade por ano (%)</h3>
         <p className="chart-description">
-          Os óbitos acompanham a tendência dos casos. A letalidade média nas formas graves varia de 30% a 60%, segundo a OPAS. O que este dado ensina: a febre amarela é uma doença grave — a prevenção pela vacina é essencial.
+          A febre amarela grave tem letalidade de aproximadamente 30–50% nos casos não vacinados. O que este dado ensina: a doença é grave e a vacinação é essencial para evitar óbitos.
         </p>
-        <DeathsChart data={dados.casos_por_ano.serie} visible={isVisible} />
+        <LetalityChart data={dados.letalidade.serie} visible={isVisible} />
         <p className="source-inline">
-          Fonte: <a href="https://www.paho.org/pt/alertas-e-atualizacoes-epidemiologicas" target="_blank" rel="noopener noreferrer">OPAS/OMS — Atualização Epidemiológica Febre Amarela ↗</a> · Consulta: 2025-09-15
+          Fonte: <a href={dados.letalidade.fonte_url} target="_blank" rel="noopener noreferrer">OPAS/OMS — Febre Amarela: Dados epidemiológicos das Américas, 2024 ↗</a> · Consulta: {dados.letalidade.data_consulta}
         </p>
-        <DataTable data={dados.casos_por_ano.serie} type="deaths" />
+        <DataTable data={dados.letalidade.serie} type="letality" />
       </div>
 
       {/* Gráfico CSS 3D: Cobertura vacinal */}
       <div className="chart-block reveal">
-        <h3 className="chart-title">Cobertura vacinal contra febre amarela no Brasil</h3>
+        <h3 className="chart-title">📈 Cobertura vacinal contra febre amarela (%)</h3>
         <p className="chart-description">
-          A linha tracejada indica a meta de 95% recomendada pela OPAS/OMS. A queda acentuada em 2017 coincide com o maior surto da doença. O que este dado ensina: cobertura vacinal abaixo da meta deixa a população vulnerável a surtos.
+          A meta da OMS é 95% de cobertura. No Brasil, a cobertura caiu nas últimas décadas, aumentando a vulnerabilidade. O que este dado ensina: cobertura vacinal abaixo da meta deixa a população vulnerável a surtos.
         </p>
         <VaccinationChart data={dados.cobertura_vacinal.serie} meta={dados.cobertura_vacinal.meta} visible={isVisible} />
         <p className="source-inline">
-          Fonte: <a href={dados.cobertura_vacinal.fonte_url} target="_blank" rel="noopener noreferrer">Ministério da Saúde — Painel InfoMS ↗</a> · Consulta: {dados.cobertura_vacinal.data_consulta}
+          Fonte: <a href={dados.cobertura_vacinal.fonte_url} target="_blank" rel="noopener noreferrer">Fiocruz — Cobertura vacinal contra febre amarela no Brasil: Série histórica, 2024 ↗</a> · Consulta: {dados.cobertura_vacinal.data_consulta}
         </p>
         <DataTable data={dados.cobertura_vacinal.serie} type="vacc" />
+      </div>
+
+      {/* 4 Contadores animados */}
+      <div className="kpi-grid reveal">
+        <div className="kpi-card kpi-highlight">
+          <div className="kpi-value">{counters.casos.toLocaleString('pt-BR')}</div>
+          <div className="kpi-label">Casos no surto 2017–2019</div>
+        </div>
+        <div className="kpi-card kpi-highlight">
+          <div className="kpi-value">{counters.obitos.toLocaleString('pt-BR')}</div>
+          <div className="kpi-label">Óbitos no surto 2017–2019</div>
+        </div>
+        <div className="kpi-card">
+          <div className="kpi-value">{counters.ultimo}</div>
+          <div className="kpi-label">Último caso urbano no Brasil</div>
+        </div>
+        <div className="kpi-card">
+          <div className="kpi-value">{counters.meta}<span className="kpi-suffix">%</span></div>
+          <div className="kpi-label">Meta de cobertura vacinal (OMS)</div>
+        </div>
       </div>
     </section>
   );
 }
 
-// Deaths Chart (CSS 3D)
-function DeathsChart({ data, visible }: { data: { ano: number; obitos: number }[]; visible: boolean }) {
-  const maxVal = Math.max(...data.map(d => d.obitos));
+// Letality Chart (CSS 3D)
+function LetalityChart({ data, visible }: { data: { ano: number; letalidade: number }[]; visible: boolean }) {
+  const maxVal = 50;
   
   return (
-    <div className="css-3d-chart" role="img" aria-label="Gráfico de barras 3D mostrando óbitos por febre amarela no Brasil de 2000 a 2024. Pico em 2018 com 453 óbitos.">
+    <div className="css-3d-chart" role="img" aria-label="Gráfico de barras 3D mostrando letalidade de febre amarela no Brasil de 2016 a 2023. Valores variam entre 28,6% e 41,5%.">
       <div className="css-3d-inner">
         <div className="deaths-chart">
           {data.map((d, i) => {
-            const height = (d.obitos / maxVal) * 100;
-            const isSurto = d.ano >= 2017 && d.ano <= 2019;
+            const height = (d.letalidade / maxVal) * 100;
             return (
               <div key={d.ano} className="deaths-bar-wrapper">
-                <span className="deaths-bar-value">{d.obitos > 50 ? d.obitos : ''}</span>
+                <span className="deaths-bar-value">{d.letalidade}%</span>
                 <div
                   className={`deaths-bar ${visible ? 'animated' : ''}`}
                   style={{
                     height: `${Math.max(height, 2)}%`,
-                    background: isSurto ? 'linear-gradient(180deg, #c6a120, #8a6e14)' : 'linear-gradient(180deg, var(--green), #0a2a1f)',
-                    transitionDelay: `${i * 40}ms`,
-                    boxShadow: isSurto ? '0 4px 12px #c6a12040' : '0 4px 8px #143f3020',
+                    background: 'linear-gradient(180deg, var(--green), #0a2a1f)',
+                    transitionDelay: `${i * 60}ms`,
+                    boxShadow: '0 4px 8px #143f3020',
                   }}
                 />
                 <span className="deaths-bar-label">{d.ano}</span>
@@ -167,8 +191,7 @@ function DeathsChart({ data, visible }: { data: { ano: number; obitos: number }[
         </div>
       </div>
       <div className="chart-legend">
-        <div className="chart-legend-item"><div className="chart-legend-dot" style={{ background: 'var(--green)' }}></div>Anos regulares</div>
-        <div className="chart-legend-item"><div className="chart-legend-dot" style={{ background: '#c6a120' }}></div>Surto 2017–2019</div>
+        <div className="chart-legend-item"><div className="chart-legend-dot" style={{ background: 'var(--green)' }}></div>Letalidade (%)</div>
       </div>
     </div>
   );
@@ -179,7 +202,6 @@ function VaccinationChart({ data, meta, visible }: { data: { ano: number; cobert
   const maxVal = 100;
   const width = 100;
   const height = 100;
-  const metaY = height - (meta / maxVal) * height;
   
   const points = data.map((d, i) => {
     const x = (i / (data.length - 1)) * width;
@@ -190,12 +212,12 @@ function VaccinationChart({ data, meta, visible }: { data: { ano: number; cobert
   const areaPoints = `0,${height} ${points} ${width},${height}`;
 
   return (
-    <div className="css-3d-chart" role="img" aria-label={`Gráfico de área mostrando cobertura vacinal contra febre amarela de 2010 a 2024. Meta de 95% não foi atingida. Ponto mais baixo: 55,7% em 2017.`}>
+    <div className="css-3d-chart" role="img" aria-label={`Gráfico de área mostrando cobertura vacinal contra febre amarela de 2000 a 2024. Meta de 95% não foi atingida. Cobertura caiu de 72% em 2000 para 67% em 2024.`}>
       <div className="css-3d-inner">
         <div className="vacc-chart">
           <div className="vacc-area">
             <div className="vacc-meta-line" style={{ top: `${(1 - meta / maxVal) * 100}%` }}>
-              <span className="vacc-meta-label">Meta: {meta}%</span>
+              <span className="vacc-meta-label">Meta OMS: {meta}%</span>
             </div>
             <svg className="vacc-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
               <defs>
@@ -227,14 +249,14 @@ function VaccinationChart({ data, meta, visible }: { data: { ano: number; cobert
       </div>
       <div className="chart-legend">
         <div className="chart-legend-item"><div className="chart-legend-dot" style={{ background: 'var(--yellow)' }}></div>Cobertura vacinal (%)</div>
-        <div className="chart-legend-item"><div className="chart-legend-dot" style={{ background: '#c6a120', borderTop: '2px dashed #c6a120', height: 0 }}></div>Meta OPAS/OMS (95%)</div>
+        <div className="chart-legend-item"><div className="chart-legend-dot" style={{ background: '#c6a120', borderTop: '2px dashed #c6a120', height: 0 }}></div>Meta OMS (95%)</div>
       </div>
     </div>
   );
 }
 
 // Accessible data table
-function DataTable({ data, type }: { data: any[]; type: 'cases' | 'deaths' | 'vacc' }) {
+function DataTable({ data, type }: { data: any[]; type: 'cases' | 'letality' | 'vacc' }) {
   return (
     <div className="data-table-wrapper">
       <details>
@@ -244,7 +266,7 @@ function DataTable({ data, type }: { data: any[]; type: 'cases' | 'deaths' | 'va
             <tr>
               <th>Ano</th>
               {type === 'cases' && <th>Casos</th>}
-              {type === 'deaths' && <th>Óbitos</th>}
+              {type === 'letality' && <th>Letalidade (%)</th>}
               {type === 'vacc' && <th>Cobertura (%)</th>}
             </tr>
           </thead>
@@ -252,7 +274,7 @@ function DataTable({ data, type }: { data: any[]; type: 'cases' | 'deaths' | 'va
             {data.map((d: any) => (
               <tr key={d.ano}>
                 <td>{d.ano}</td>
-                <td>{type === 'cases' ? d.casos : type === 'deaths' ? d.obitos : d.cobertura}</td>
+                <td>{type === 'cases' ? d.casos : type === 'letality' ? d.letalidade : d.cobertura}</td>
               </tr>
             ))}
           </tbody>

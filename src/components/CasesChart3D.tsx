@@ -4,7 +4,6 @@ import * as THREE from 'three';
 interface CaseData {
   ano: number;
   casos: number;
-  obitos: number;
 }
 
 interface Props {
@@ -113,7 +112,7 @@ export default function CasesChart3D({ data }: Props) {
       bar.position.set(startX + i * (barWidth + gap) + barWidth / 2, barHeight / 2, 0);
       bar.castShadow = !isWeak;
       bar.receiveShadow = !isWeak;
-      bar.userData = { ano: d.ano, casos: d.casos, obitos: d.obitos, isSurto };
+      bar.userData = { ano: d.ano, casos: d.casos, isSurto };
       
       // Start with scale 0 for animation
       if (!reducedMotion) {
@@ -170,7 +169,7 @@ export default function CasesChart3D({ data }: Props) {
         setTooltipData({
           x: event.clientX - rect.left,
           y: event.clientY - rect.top - 40,
-          text: `${d.ano}: ${d.casos} casos · ${d.obitos} óbitos${d.isSurto ? ' ⚠️ Surto' : ''}`,
+          text: `${d.ano}: ${d.casos} casos${d.isSurto ? ' ⚠️ Surto' : ''}`,
         });
         (obj as THREE.Mesh).material = new THREE.MeshStandardMaterial({
           color: d.isSurto ? 0xe8b820 : 0x1a5a40,
