@@ -494,6 +494,71 @@ main { overflow-x: clip; }
 
 /* Content is always visible - animations are progressive enhancement only */
 
+/* SVG Chart containers */
+.svg-chart-container {
+  margin: 20px 0;
+}
+
+.svg-chart-container svg {
+  display: block;
+  max-width: 100%;
+}
+
+.svg-chart-container svg rect,
+.svg-chart-container svg circle {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.svg-chart-container svg rect:hover,
+.svg-chart-container svg circle:hover {
+  opacity: 0.8;
+}
+
+/* Data table styling */
+.data-table-wrapper {
+  margin-top: 15px;
+}
+
+.data-table-wrapper details {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  background: var(--paper);
+}
+
+.data-table-wrapper summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 500;
+  padding: 4px 0;
+}
+
+.data-table-wrapper table {
+  width: 100%;
+  margin-top: 12px;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.data-table-wrapper th,
+.data-table-wrapper td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+
+.data-table-wrapper th {
+  font-weight: 600;
+  color: var(--green);
+  background: var(--pale);
+}
+
+.data-table-wrapper tr:last-child td {
+  border-bottom: none;
+}
+
 /* Smooth transitions for header */
 .header {
   transition: height 0.3s ease;

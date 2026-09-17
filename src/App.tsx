@@ -89,14 +89,29 @@ export default function App() {
     setQuizSelected(null);
   };
 
-  // Game state
+  // Game state - useRef como fonte da verdade do loop
   const [gameState, setGameState] = useState<'idle' | 'running' | 'paused' | 'over'>('idle');
+  const modeRef = useRef<'idle' | 'running' | 'paused' | 'over'>('idle');
   const [gameScore, setGameScore] = useState(0);
   const [gameLives, setGameLives] = useState(3);
   const [gameTime, setGameTime] = useState(45);
   const gameRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<HTMLDivElement>(null);
-  const gameDataRef = useRef<{ items: any[]; raf: number; last: number; spawn: number; serial: number; pointer: any }>({ items: [], raf: 0, last: 0, spawn: 0, serial: 0, pointer: null });
+  const gameDataRef = useRef<{
+    items: any[];
+    raf: number;
+    last: number;
+    spawn: number;
+    serial: number;
+    pointer: any;
+    score: number;
+    lives: number;
+  }>({ items: [], raf: 0, last: 0, spawn: 0, serial: 0, pointer: null, score: 0, lives: 3 });
+
+  function setGameMode(next: 'idle' | 'running' | 'paused' | 'over') {
+    modeRef.current = next;
+    setGameState(next);
+  }
 
   const clearGameItems = useCallback(() => {
     gameDataRef.current.items.forEach((i: any) => i.el?.remove());
@@ -104,37 +119,160 @@ export default function App() {
     gameDataRef.current.pointer = null;
   }, []);
 
+  const createItem = useCallback(() => {
+    if (!itemsRef.current) return;
+    const layer = itemsRef.current;
+    const rand = Math.random();
+    const type = rand > 0.85 ? 'bomba' : rand > 0.65 ? 'vacina' : 'mosquito';
+    const isMosquito = type === 'mosquito';
+
+    const el = document.createElement('button');
+    el.type = 'button';
+    el.className = `ninja-item ${type}`;
+    el.setAttribute('aria-label', isMosquito ? 'Acertar mosquito' : type === 'bomba' ? 'Bomba: não acertar' : 'Escudo de proteção: não acertar');
+    el.innerHTML = `${isMosquito ? '🦟' : type === 'bomba' ? '💣' : '🛡️'}<small>${isMosquito ? 'MOSQUITO' : type === 'bomba' ? 'BOMBA' : 'PROTEÇÃO'}</small>`;
+
+    const arena = layer.parentElement;
+    if (!arena) return;
+    const w = arena.clientWidth;
+    const h = arena.clientHeight;
+    const size = 62;
+
+    const item = {
+      id: ++gameDataRef.current.serial,
+      el,
+      mosquito: isMosquito,
+      type,
+      x: Math.random() * Math.max(1, w - size),
+      y: h + size,
+      vx: (Math.random() - 0.5) * 100,
+      vy: -Math.sqrt(2 * 700 * (h * 0.8 + size)),
+      age: 0,
+    };
+
+    el.addEventListener('click', () => hitItem(item));
+    layer.append(el);
+    gameDataRef.current.items.push(item);
+    positionItem(item);
+  }, []);
+
+  const positionItem = (item: any) => {
+    item.el.style.transform = `translate(${item.x}px, ${item.y}px)`;
+  };
+
+  const removeItem = (item: any) => {
+    gameDataRef.current.items = gameDataRef.current.items.filter((i: any) => i !== item);
+    item.el.remove();
+  };
+
+  const hitItem = useCallback((item: any) => {
+    if (modeRef.current !== 'running' || !gameDataRef.current.items.includes(item)) return;
+    removeItem(item);
+
+    if (item.mosquito) {
+      gameDataRef.current.score += 10;
+      setGameScore(gameDataRef.current.score);
+    } else {
+      const damage = item.type === 'bomba' ? 2 : 1;
+      gameDataRef.current.lives = Math.max(0, gameDataRef.current.lives - damage);
+      setGameLives(gameDataRef.current.lives);
+      if (gameDataRef.current.lives <= 0) {
+        setGameMode('over');
+        cancelAnimationFrame(gameDataRef.current.raf);
+        clearGameItems();
+      }
+    }
+  }, [clearGameItems]);
+
   const startGame = useCallback(() => {
     cancelAnimationFrame(gameDataRef.current.raf);
     clearGameItems();
     setGameScore(0);
     setGameLives(3);
     setGameTime(45);
-    setGameState('running');
+    gameDataRef.current.score = 0;
+    gameDataRef.current.lives = 3;
     gameDataRef.current.spawn = 0.6;
     gameDataRef.current.last = performance.now();
-    
-    const tick = (now: number) => {
-      if (gameState !== 'running') return;
+    setGameMode('running');
+
+    const loop = (now: number) => {
+      if (modeRef.current !== 'running') {
+        gameDataRef.current.raf = requestAnimationFrame(loop);
+        return;
+      }
+
       const dt = Math.min((now - gameDataRef.current.last) / 1000, 0.04);
       gameDataRef.current.last = now;
-      
+
+      // Timer
       setGameTime(prev => {
         const next = Math.max(0, prev - dt);
-        if (next <= 0) { setGameState('over'); return 0; }
+        if (next <= 0) {
+          setGameMode('over');
+          cancelAnimationFrame(gameDataRef.current.raf);
+          clearGameItems();
+          return 0;
+        }
         return next;
       });
-      
+
+      // Spawn items
       gameDataRef.current.spawn += dt;
       if (gameDataRef.current.spawn >= 1.1) {
         gameDataRef.current.spawn = 0;
-        // spawn item logic handled by React
+        createItem();
       }
-      
-      gameDataRef.current.raf = requestAnimationFrame(tick);
+
+      // Update items
+      const arena = itemsRef.current?.parentElement;
+      if (arena) {
+        const arenaH = arena.clientHeight;
+        for (const item of [...gameDataRef.current.items]) {
+          item.age += dt;
+          item.x += item.vx * dt;
+          item.y += item.vy * dt;
+          item.vy += 700 * dt;
+
+          const max = arena.clientWidth - 62;
+          if (item.x < 0 || item.x > max) {
+            item.x = Math.max(0, Math.min(max, item.x));
+            item.vx = -item.vx;
+          }
+          positionItem(item);
+
+          // Remove if off screen
+          if (item.y > arenaH + 70 && item.vy > 0) {
+            removeItem(item);
+            if (item.mosquito) {
+              gameDataRef.current.lives = Math.max(0, gameDataRef.current.lives - 1);
+              setGameLives(gameDataRef.current.lives);
+              if (gameDataRef.current.lives <= 0) {
+                setGameMode('over');
+                cancelAnimationFrame(gameDataRef.current.raf);
+                clearGameItems();
+                return;
+              }
+            }
+          }
+        }
+      }
+
+      gameDataRef.current.raf = requestAnimationFrame(loop);
     };
-    gameDataRef.current.raf = requestAnimationFrame(tick);
-  }, [gameState, clearGameItems]);
+    gameDataRef.current.raf = requestAnimationFrame(loop);
+  }, [clearGameItems, createItem]);
+
+  const pauseGame = useCallback(() => {
+    if (modeRef.current !== 'running') return;
+    setGameMode('paused');
+  }, []);
+
+  const resumeGame = useCallback(() => {
+    if (modeRef.current !== 'paused') return;
+    gameDataRef.current.last = performance.now();
+    setGameMode('running');
+  }, []);
 
   return (
     <div className="js-motion" ref={rootRef}>
@@ -385,7 +523,7 @@ export default function App() {
                 <div>PONTOS<strong>{gameScore}</strong></div>
                 <div>VIDAS<strong data-lives="">{gameLives}</strong></div>
                 <div>TEMPO<strong>{Math.ceil(gameTime)}s</strong></div>
-                <button type="button" disabled={gameState !== 'running'} onClick={() => setGameState('paused')}>Pausar</button>
+                <button type="button" disabled={gameState !== 'running'} onClick={pauseGame}>Pausar</button>
               </div>
               <div className="ninja-arena" tabIndex={0} role="region" aria-label="Arena do jogo">
                 <div className="ninja-items" ref={itemsRef}></div>
@@ -394,7 +532,7 @@ export default function App() {
                     <span className="ninja-emblem" aria-hidden="true">🦟</span>
                     <h3>{gameState === 'over' ? 'Fim de jogo!' : gameState === 'paused' ? 'Jogo pausado' : 'Pronto para o desafio?'}</h3>
                     <p>{gameState === 'over' ? `Você fez ${gameScore} pontos.` : gameState === 'paused' ? 'Seus pontos, vidas e tempo estão preservados.' : 'Você tem 3 vidas. Acerte os mosquitos. Deixe escudos e bombas passarem.'}</p>
-                    <button type="button" className="button yellow" onClick={gameState === 'paused' ? () => setGameState('running') : startGame}>
+                    <button type="button" className="button yellow" onClick={gameState === 'paused' ? resumeGame : startGame}>
                       {gameState === 'over' ? 'Jogar novamente' : gameState === 'paused' ? 'Continuar' : 'Começar jogo'}
                     </button>
                   </div>
