@@ -28,16 +28,25 @@ export default defineConfig({
   build: {
     // Otimizações de build
     target: 'es2020',
-    minify: 'esbuild',
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
     // Code splitting automático
     rollupOptions: {
       output: {
         manualChunks: {
           'vendor': ['react', 'react-dom'],
           'gsap': ['gsap'],
+          'three': ['three'],
         },
       },
     },
+    // Gera manifest para cache busting
+    manifest: true,
     // Otimiza CSS
     cssCodeSplit: true,
     // Remove console.log em produção

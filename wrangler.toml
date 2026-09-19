@@ -1,0 +1,15 @@
+# Cloudflare Workers - Cache Headers Configuration
+# Arquivo: wrangler.toml (para deploy via Wrangler CLI)
+
+name = "febreamarela-cache"
+main = "src/worker.js"
+compatibility_date = "2024-01-01"
+
+# Rotas que este worker vai interceptar
+routes = [
+  { pattern = "febreamarela.blog/*", zone_name = "febreamarela.blog" }
+]
+
+# Variáveis de ambiente
+[vars]
+ENVIRONMENT = "production"
