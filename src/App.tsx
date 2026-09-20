@@ -492,10 +492,22 @@ export default function App() {
                 <p className="quiz-category">{questions[quizIndex].category}</p>
                 <h3>{questions[quizIndex].text}</h3>
                 <div className="answer-buttons">
-                  <button type="button" className={`answer truth ${quizSelected === true ? 'selected' : ''}`} disabled={quizAnswered} onClick={() => handleAnswer(true)}>
+                  <button 
+                    type="button" 
+                    className={`answer truth ${quizSelected === true ? 'selected' : ''}`} 
+                    disabled={quizAnswered} 
+                    onClick={() => handleAnswer(true)}
+                    aria-label="Marcar afirmação como verdade"
+                  >
                     <span aria-hidden="true">✓</span> Verdade
                   </button>
-                  <button type="button" className={`answer myth ${quizSelected === false ? 'selected' : ''}`} disabled={quizAnswered} onClick={() => handleAnswer(false)}>
+                  <button 
+                    type="button" 
+                    className={`answer myth ${quizSelected === false ? 'selected' : ''}`} 
+                    disabled={quizAnswered} 
+                    onClick={() => handleAnswer(false)}
+                    aria-label="Marcar afirmação como mito"
+                  >
                     <span aria-hidden="true">×</span> Mito
                   </button>
                 </div>
@@ -507,7 +519,13 @@ export default function App() {
                   </div>
                 )}
                 {quizAnswered && (
-                  <button type="button" id="quiz-next" className="button green" onClick={handleNext}>
+                  <button 
+                    type="button" 
+                    id="quiz-next" 
+                    className="button green" 
+                    onClick={handleNext}
+                    aria-label={quizIndex === questions.length - 1 ? 'Ver resultado final do quiz' : 'Avançar para próxima pergunta'}
+                  >
                     {quizIndex === questions.length - 1 ? 'Ver meu resultado →' : 'Próxima pergunta →'}
                   </button>
                 )}
@@ -519,7 +537,14 @@ export default function App() {
                 <p id="quiz-result-message">
                   {quizScore >= 4 ? 'Excelente! Você demonstra bom conhecimento sobre febre amarela.' : quizScore >= 2 ? 'Bom resultado! Revise os temas para se proteger ainda mais.' : 'Que tal revisar as informações? O conhecimento protege você e quem está por perto.'}
                 </p>
-                <button type="button" className="button green" onClick={restartQuiz}>Tentar novamente <span>↻</span></button>
+                <button 
+                  type="button" 
+                  className="button green" 
+                  onClick={restartQuiz}
+                  aria-label="Reiniciar quiz e tentar novamente"
+                >
+                  Tentar novamente <span>↻</span>
+                </button>
                 <a className="result-link" href="#vacinacao">Rever as formas de prevenção ↑</a>
               </div>
             )}
@@ -547,16 +572,21 @@ export default function App() {
                 <div>PONTOS<strong>{gameScore}</strong></div>
                 <div>VIDAS<strong data-lives="">{gameLives}</strong></div>
                 <div>TEMPO<strong>{Math.ceil(gameTime)}s</strong></div>
-                <button type="button" disabled={gameState !== 'running'} onClick={pauseGame}>Pausar</button>
+                <button type="button" disabled={gameState !== 'running'} onClick={pauseGame} aria-label="Pausar jogo">Pausar</button>
               </div>
-              <div className="ninja-arena" tabIndex={0} role="region" aria-label="Arena do jogo">
+              <div className="ninja-arena" tabIndex={0} role="region" aria-label="Arena do jogo - Use o mouse para acertar mosquitos, evite bombas e escudos">
                 <div className="ninja-items" ref={itemsRef}></div>
                 {gameState !== 'running' && (
                   <div className="ninja-overlay">
                     <span className="ninja-emblem" aria-hidden="true">🦟</span>
                     <h3>{gameState === 'over' ? 'Fim de jogo!' : gameState === 'paused' ? 'Jogo pausado' : 'Pronto para o desafio?'}</h3>
                     <p>{gameState === 'over' ? `Você fez ${gameScore} pontos.` : gameState === 'paused' ? 'Seus pontos, vidas e tempo estão preservados.' : 'Você tem 3 vidas. Acerte os mosquitos. Deixe escudos e bombas passarem.'}</p>
-                    <button type="button" className="button yellow" onClick={gameState === 'paused' ? resumeGame : startGame}>
+                    <button 
+                      type="button" 
+                      className="button yellow" 
+                      onClick={gameState === 'paused' ? resumeGame : startGame}
+                      aria-label={gameState === 'over' ? 'Jogar novamente' : gameState === 'paused' ? 'Continuar jogo' : 'Iniciar jogo de caça ao mosquito'}
+                    >
                       {gameState === 'over' ? 'Jogar novamente' : gameState === 'paused' ? 'Continuar' : 'Começar jogo'}
                     </button>
                   </div>
