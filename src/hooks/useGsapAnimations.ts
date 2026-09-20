@@ -473,15 +473,26 @@ function initMicroInteractions(
   q: ReturnType<typeof gsap.utils.selector>,
   rootRef: RefObject<HTMLElement>
 ) {
-  // Magnetic hover em botões (desktop only)
+  // Magnetic hover em botões (desktop only) - com Read/Write Batching
   if (!window.matchMedia('(pointer: coarse)').matches) {
     const buttons = q('.button, .text-link').filter((el): el is HTMLElement => el instanceof HTMLElement);
     buttons.forEach((button) => {
+      // Cache do rect para evitar reflow
+      let cachedRect: DOMRect | null = null;
+      
+      const updateCache = () => {
+        cachedRect = button.getBoundingClientRect();
+      };
+      
       button.addEventListener('mousemove', (e: MouseEvent) => {
-        const rect = button.getBoundingClientRect();
+        // Lê do cache (sem reflow)
+        if (!cachedRect) updateCache();
+        const rect = cachedRect!;
+        
         const x = e.clientX - rect.left - rect.width / 2;
         const y = e.clientY - rect.top - rect.height / 2;
 
+        // Escreve (sem ler depois)
         gsap.to(button, {
           x: x * 0.1,
           y: y * 0.1,
@@ -491,6 +502,8 @@ function initMicroInteractions(
       });
 
       button.addEventListener('mouseleave', () => {
+        cachedRect = null; // Limpa cache
+        
         gsap.to(button, {
           x: 0,
           y: 0,
@@ -513,12 +526,16 @@ function initMicroInteractions(
           ease: 'power2.out',
         });
       });
+      
+      // Atualiza cache em resize
+      window.addEventListener('resize', updateCache, { passive: true });
     });
 
-    // Tilt 3D em cards
+    // Tilt 3D em cards - com Read/Write Batching
     const cards = q('.info-card, .cycle-card, .kpi-card, .stat-mini-card').filter((el): el is HTMLElement => el instanceof HTMLElement);
     cards.forEach((card) => {
       card.addEventListener('mousemove', (e: MouseEvent) => {
+        // Lê uma vez
         const rect = card.getBoundingClientRect();
         const x = (e.clientX - rect.left) / rect.width;
         const y = (e.clientY - rect.top) / rect.height;
@@ -526,6 +543,7 @@ function initMicroInteractions(
         const rotateX = (y - 0.5) * -4;
         const rotateY = (x - 0.5) * 4;
 
+        // Escreve (sem ler depois)
         gsap.to(card, {
           rotateX,
           rotateY,
