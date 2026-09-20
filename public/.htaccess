@@ -1,6 +1,7 @@
 # =============================================================================
-# HOSTINGER - LiteSpeed/Apache Performance Configuration
+# HOSTINGER - LiteSpeed Performance Configuration
 # Site: https://febreamarela.blog/
+# Foco: LCP, FCP e Cache Agressivo
 # =============================================================================
 
 # Ativar RewriteEngine
@@ -11,35 +12,56 @@
   RewriteCond %{HTTPS} off
   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
   
-  # Remover www (ou adicionar, escolha um)
-  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
-  RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
-  
-  # SPA Fallback - redirecionar para index.html
+  # SPA Fallback
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^(.*)$ /index.html [L]
 </IfModule>
 
 # =============================================================================
-# CACHE CONTROL - Assets com Hash (Cache Agressivo)
+# 1. COMPRESSÃO BROTLI (Prioridade sobre Gzip)
+# =============================================================================
+<IfModule mod_brotli.c>
+  BrotliCompressionLevel 6
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css
+  AddOutputFilterByType BROTLI_COMPRESS application/javascript application/json
+  AddOutputFilterByType BROTLI_COMPRESS application/xml application/xhtml+xml
+  AddOutputFilterByType BROTLI_COMPRESS image/svg+xml font/woff2 font/ttf
+</IfModule>
+
+# Fallback Gzip para navegadores antigos
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE application/xml application/xhtml+xml
+  AddOutputFilterByType DEFLATE image/svg+xml font/woff2 font/ttf
+</IfModule>
+
+# =============================================================================
+# 2. CACHE-CONTROL AGRESSIVO (1 ano para assets com hash)
 # =============================================================================
 <IfModule mod_expires.c>
   ExpiresActive On
   
-  # Assets com hash (JS, CSS, imagens otimizadas) - 1 ano
-  <FilesMatch "\.(js|css|webp|avif|png|jpg|jpeg|gif|svg|woff2|woff)$">
+  # Assets com hash (JS, CSS, fontes) - 1 ano, immutable
+  <FilesMatch "\.(js|css|woff2|woff|ttf|eot)$">
     ExpiresDefault "access plus 1 year"
     Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
   
-  # HTML - cache curto (sempre verificar atualização)
+  # Imagens otimizadas (WebP, AVIF, JPG, PNG) - 1 ano
+  <FilesMatch "\.(webp|avif|png|jpg|jpeg|gif|svg)$">
+    ExpiresDefault "access plus 1 year"
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  
+  # HTML - cache curto (1 hora)
   <FilesMatch "\.(html|htm)$">
     ExpiresDefault "access plus 1 hour"
     Header set Cache-Control "public, max-age=3600, must-revalidate"
   </FilesMatch>
   
-  # JSON e outros dados - cache médio
+  # JSON e dados - cache médio (1 dia)
   <FilesMatch "\.(json|txt|xml)$">
     ExpiresDefault "access plus 1 day"
     Header set Cache-Control "public, max-age=86400"
@@ -47,27 +69,29 @@
 </IfModule>
 
 # =============================================================================
-# COMPRESSÃO - Brotli e Gzip
+# 3. SERVIR WEBP/AVIF AUTOMATICAMENTE
 # =============================================================================
-<IfModule mod_brotli.c>
-  # Brotli (prioridade máxima)
-  AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css
-  AddOutputFilterByType BROTLI_COMPRESS application/javascript application/json
-  AddOutputFilterByType BROTLI_COMPRESS application/xml application/xhtml+xml
-  AddOutputFilterByType BROTLI_COMPRESS image/svg+xml font/woff2
-  BrotliCompressionLevel 6
+<IfModule mod_rewrite.c>
+  # Servir AVIF se suportado (prioridade máxima)
+  RewriteCond %{HTTP_ACCEPT} image/avif
+  RewriteCond %{REQUEST_URI} (?i)(.*)(\.jpe?g|\.png)$
+  RewriteCond %{DOCUMENT_ROOT}%1.avif -f
+  RewriteRule (?i)(.*)(\.jpe?g|\.png)$ %1.avif [L,T=image/avif,E=REQUEST_image]
+  
+  # Servir WebP se suportado
+  RewriteCond %{HTTP_ACCEPT} image/webp
+  RewriteCond %{REQUEST_URI} (?i)(.*)(\.jpe?g|\.png)$
+  RewriteCond %{DOCUMENT_ROOT}%1.webp -f
+  RewriteRule (?i)(.*)(\.jpe?g|\.png)$ %1.webp [L,T=image/webp,E=REQUEST_image]
+  
+  # Adicionar Vary header para cache correto
+  <IfModule mod_headers.c>
+    Header append Vary "Accept" env=REQUEST_image
+  </IfModule>
 </IfModule>
 
-<IfModule mod_deflate.c>
-  # Gzip (fallback para navegadores antigos)
-  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
-  AddOutputFilterByType DEFLATE application/javascript application/json
-  AddOutputFilterByType DEFLATE application/xml application/xhtml+xml
-  AddOutputFilterByType DEFLATE image/svg+xml font/woff2
-</IfModule>
-
 # =============================================================================
-# HEADERS DE SEGURANÇA E PERFORMANCE
+# 4. HEADERS DE SEGURANÇA E PERFORMANCE
 # =============================================================================
 <IfModule mod_headers.c>
   # Remover headers desnecessários
@@ -80,32 +104,10 @@
   Header always set X-XSS-Protection "1; mode=block"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   
-  # Vary header para cache correto com compressão
+  # Vary header para compressão
   Header append Vary "Accept-Encoding"
-</IfModule>
-
-# =============================================================================
-# OTIMIZAÇÃO DE IMAGENS - WebP/AVIF com fallback
-# =============================================================================
-<IfModule mod_rewrite.c>
-  # Servir WebP se o navegador suportar
-  RewriteCond %{HTTP_ACCEPT} image/webp
-  RewriteCond %{REQUEST_URI} (?i)(.*)(\.jpe?g|\.png)$
-  RewriteCond %{DOCUMENT_ROOT}%1.webp -f
-  RewriteRule (?i)(.*)(\.jpe?g|\.png)$ %1.webp [L,T=image/webp,R]
   
-  # Servir AVIF se o navegador suportar (prioridade sobre WebP)
-  RewriteCond %{HTTP_ACCEPT} image/avif
-  RewriteCond %{REQUEST_URI} (?i)(.*)(\.jpe?g|\.png)$
-  RewriteCond %{DOCUMENT_ROOT}%1.avif -f
-  RewriteRule (?i)(.*)(\.jpe?g|\.png)$ %1.avif [L,T=image/avif,R]
-</IfModule>
-
-# =============================================================================
-# PRELOAD DE FONTES E RECURSOS CRÍTICOS
-# =============================================================================
-<IfModule mod_headers.c>
-  # Link headers para preload de recursos críticos
+  # Preload hints para recursos críticos
   <FilesMatch "\.html$">
     Header set Link "<https://fonts.googleapis.com>; rel=preconnect"
     Header set Link "<https://fonts.gstatic.com>; rel=preconnect; crossorigin"
@@ -113,23 +115,37 @@
 </IfModule>
 
 # =============================================================================
-# BLOQUEIO DE ACESSO A ARQUIVOS SENSÍVEIS
+# 5. OTIMIZAÇÕES LITESPEED ESPECÍFICAS
 # =============================================================================
-<FilesMatch "\.(env|log|md|json|lock)$">
+<IfModule LiteSpeed>
+  # Ativar cache do LiteSpeed
+  CacheLookup on
+  
+  # Cache de páginas estáticas
+  RewriteRule .* - [E=Cache-Control:max-age=604800]
+  
+  # Compressão adicional do LiteSpeed
+  RewriteRule \.(css|js|html|htm)$ - [E=no-gzip:1]
+</IfModule>
+
+# =============================================================================
+# 6. BLOQUEIO DE ACESSO A ARQUIVOS SENSÍVEIS
+# =============================================================================
+<FilesMatch "\.(env|log|md|lock)$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>
 </FilesMatch>
 
-# Bloquear acesso a node_modules e src
 <IfModule mod_rewrite.c>
   RewriteRule ^node_modules/ - [F,L]
   RewriteRule ^src/ - [F,L]
   RewriteRule ^vite\.config\. - [F,L]
+  RewriteRule ^scripts/ - [F,L]
 </IfModule>
 
 # =============================================================================
-# PERFORMANCE - Desativar ETags (usar Cache-Control)
+# 7. DESATIVAR ETAGS (usar Cache-Control)
 # =============================================================================
 <IfModule mod_headers.c>
   Header unset ETag
@@ -137,7 +153,7 @@
 FileETag None
 
 # =============================================================================
-# KEEP-ALIVE - Manter conexões abertas
+# 8. KEEP-ALIVE
 # =============================================================================
 <IfModule mod_headers.c>
   Header set Connection "keep-alive"
