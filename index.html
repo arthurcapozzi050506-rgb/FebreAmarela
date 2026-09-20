@@ -4,9 +4,44 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Febre Amarela — Informação que protege</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="description" content="Entenda a febre amarela, descubra como se prevenir e transforme informação em cuidado. Projeto educativo sobre prevenção e vacinação." />
+    
+    <!-- Preconnect para fontes (não-bloqueante) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Preload da imagem LCP (mosquito) -->
+    <link rel="preload" as="image" href="/assets/mosquito.jpg" type="image/jpeg" fetchpriority="high" />
+    
+    <!-- Critical CSS Inline (acima da dobra) -->
+    <style>
+      *,*::before,*::after{box-sizing:border-box}
+      html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+      body{margin:0;font-family:'DM Sans',system-ui,-apple-system,sans-serif;color:#143f30;background:#f8f6ed;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+      :root{--cream:#f8f6ed;--paper:#fffdf6;--green:#143f30;--yellow:#f6cb46;--muted:#5c6d60;--pale:#e5ebd9;--line:#dfdfd1}
+      .header{height:90px;position:sticky;top:0;z-index:30;background:#f8f6edf5;backdrop-filter:blur(16px);border-bottom:1px solid var(--line);display:flex;gap:25px;align-items:center;justify-content:space-between;padding-inline:max(5.5%,calc((100vw - 1280px)/2))}
+      .brand{display:flex;gap:10px;align-items:center;white-space:nowrap;line-height:1.1;font-size:.9rem;letter-spacing:-.02em;font-weight:800}
+      .brand-mark{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;font-size:2.35rem;background:var(--yellow);font-weight:400}
+      .hero{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;padding-top:55px;padding-bottom:55px;min-height:635px;align-items:center;width:min(1280px,89%);margin-inline:auto}
+      .eyebrow{font-size:.73rem;font-weight:700;letter-spacing:.14em;margin-bottom:22px}
+      h1{font-family:'Manrope',sans-serif;font-size:clamp(2.9rem,4.75vw,4.9rem);letter-spacing:-.055em;line-height:1.1;font-weight:700;margin:0}
+      h1 em{font-family:Georgia,serif;font-weight:400;font-style:italic;position:relative;display:inline-block}
+      h1 em:after{content:'';position:absolute;bottom:3px;left:-2px;right:-5px;height:20%;background:var(--yellow);z-index:-1;transform:rotate(-2deg)}
+      .lead{font-size:1.02rem;color:var(--muted);max-width:460px;margin-top:22px;line-height:1.75}
+      #root:empty{min-height:100vh;display:grid;place-items:center}
+      #root:empty::after{content:'Carregando...';color:var(--muted);font-size:1rem}
+      @media (max-width:720px){.hero{grid-template-columns:1fr;padding-block:38px 45px;gap:40px}.header{height:76px}}
+    </style>
+    
+    <!-- CSS completo carregado de forma não-bloqueante -->
+    <link rel="preload" as="style" href="/assets/index-BMKUbPGb.css" />
+    <link rel="stylesheet" href="/assets/index-BMKUbPGb.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="/assets/index-BMKUbPGb.css" /></noscript>
+    
+    <!-- Google Fonts carregado de forma não-bloqueante -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" /></noscript>
   </head>
   <body>
     <div id="root"></div>
