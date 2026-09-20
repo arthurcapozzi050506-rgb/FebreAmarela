@@ -316,18 +316,10 @@ export default function App() {
           <div className="hero-art">
             <div className="sun-disc" aria-hidden="true"></div>
             <div className="hero-picture">
-              <picture>
-                <source type="image/avif" srcSet="/assets/mosquito.avif" sizes="(max-width: 768px) 100vw, 50vw" />
-                <source type="image/webp" srcSet="/assets/mosquito.webp" sizes="(max-width: 768px) 100vw, 50vw" />
-                <img src="/assets/mosquito.jpg" alt="Mosquito Aedes aegypti, vetor do ciclo urbano, em fotografia aproximada" width="800" height="880" loading="eager" fetchPriority="high" decoding="async" />
-              </picture>
+              <img src="https://rough-band-64f8.capozziarthur12.workers.dev/assets/mosquito.jpg" alt="Mosquito Aedes aegypti, vetor do ciclo urbano, em fotografia aproximada" width="1000" height="1100" />
               <span className="image-caption">Aedes aegypti · vetor do ciclo urbano</span>
             </div>
-            <picture>
-              <source type="image/avif" srcSet="/assets/foliage.avif" sizes="(max-width: 768px) 100vw, 50vw" />
-              <source type="image/webp" srcSet="/assets/foliage.webp" sizes="(max-width: 768px) 100vw, 50vw" />
-              <img className="foliage foliage-hero" src="/assets/foliage.png" alt="" aria-hidden="true" width="350" height="350" loading="lazy" decoding="async" />
-            </picture>
+            <img className="foliage foliage-hero" src="https://rough-band-64f8.capozziarthur12.workers.dev/assets/foliage.png" alt="" aria-hidden="true" width="350" height="350" />
             <div className="floating-note">
               <span className="note-icon" aria-hidden="true">✚</span>
               <p>Pequenas atitudes.<br /><strong>Mais proteção.</strong></p>
@@ -408,17 +400,9 @@ export default function App() {
         {/* Silvestre */}
         <section id="silvestre" className="section wrap wildlife">
           <div className="wildlife-picture reveal">
-            <picture>
-              <source type="image/avif" srcSet="/assets/primata.avif" sizes="(max-width: 768px) 100vw, 50vw" />
-              <source type="image/webp" srcSet="/assets/primata.webp" sizes="(max-width: 768px) 100vw, 50vw" />
-              <img src="/assets/primata.jpg" alt="Mico-leão-dourado sobre um galho" width="1024" height="683" loading="lazy" decoding="async" />
-            </picture>
+            <img src="https://rough-band-64f8.capozziarthur12.workers.dev/assets/primata.jpg" alt="Mico-leão-dourado sobre um galho" width="1024" height="683" loading="lazy" />
             <span className="picture-label">PROTEGER A NATUREZA TAMBÉM É CUIDAR DA SAÚDE</span>
-            <picture>
-              <source type="image/avif" srcSet="/assets/foliage.avif" sizes="(max-width: 768px) 100vw, 50vw" />
-              <source type="image/webp" srcSet="/assets/foliage.webp" sizes="(max-width: 768px) 100vw, 50vw" />
-              <img className="foliage foliage-wild" src="/assets/foliage.png" alt="" aria-hidden="true" width="240" height="300" loading="lazy" decoding="async" />
-            </picture>
+            <img className="foliage foliage-wild" src="https://rough-band-64f8.capozziarthur12.workers.dev/assets/foliage.png" alt="" aria-hidden="true" width="240" height="300" loading="lazy" />
           </div>
           <div className="wildlife-copy reveal">
             <p className="eyebrow">03 / ELES TAMBÉM PRECISAM DE PROTEÇÃO</p>
@@ -446,11 +430,7 @@ export default function App() {
               <p className="vaccine-note">Gestantes, pessoas com 60 anos ou mais e pessoas com condições especiais de saúde precisam de avaliação individual. A equipe de saúde orienta sobre indicações e contraindicações.</p>
             </div>
             <figure className="vaccine-picture reveal">
-              <picture>
-                <source type="image/avif" srcSet="/assets/vacinacao.avif" sizes="(max-width: 768px) 100vw, 50vw" />
-                <source type="image/webp" srcSet="/assets/vacinacao.webp" sizes="(max-width: 768px) 100vw, 50vw" />
-                <img src="/assets/vacinacao.jpg" alt="Profissional de saúde aplicando uma vacina no braço de uma pessoa" width="1000" height="900" loading="lazy" decoding="async" />
-              </picture>
+              <img src="https://rough-band-64f8.capozziarthur12.workers.dev/assets/vacinacao.jpg" alt="Profissional de saúde aplicando uma vacina no braço de uma pessoa" width="1000" height="900" loading="lazy" />
               <figcaption>Imagem ilustrativa de vacinação.</figcaption>
               <div className="vaccine-stamp"><span>+</span>PREVENIR<br />É CUIDAR</div>
             </figure>
@@ -473,11 +453,7 @@ export default function App() {
             <p>Cinco perguntas para transformar dúvidas em conhecimento. Responda e descubra a explicação de cada uma.</p>
             <p className="quiz-evidence">Informações falsas e dúvidas sobre a vacina estão associadas à hesitação vacinal. <a href="#ref-2">Lopes et al. (2023) [2]</a>.</p>
             <p className="handwritten quiz-hand">Informação boa<br />é informação compartilhada.</p>
-            <picture>
-              <source type="image/avif" srcSet="/assets/foliage.avif" sizes="(max-width: 768px) 100vw, 50vw" />
-              <source type="image/webp" srcSet="/assets/foliage.webp" sizes="(max-width: 768px) 100vw, 50vw" />
-              <img className="foliage foliage-quiz" src="/assets/foliage.png" alt="" aria-hidden="true" width="230" height="230" loading="lazy" decoding="async" />
-            </picture>
+            <img className="foliage foliage-quiz" src="https://rough-band-64f8.capozziarthur12.workers.dev/assets/foliage.png" alt="" aria-hidden="true" width="230" height="230" loading="lazy" />
           </div>
           <div className="quiz-card reveal">
             <div className="quiz-meta">
